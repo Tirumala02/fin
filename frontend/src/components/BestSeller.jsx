@@ -4,26 +4,25 @@ import Title from './Title';
 import ProductItem from './ProductItem';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
-const BestSellerCollection = () => {
+const BestSeller = () => {
   const { products } = useContext(ShopContext);
-  const [bestSellerProducts, setBestSellerProducts] = useState([]);
+  const [bestSeller, setBestSeller] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  const itemsPerPage = 6; // Set the number of items per page
+  const itemsPerPage = 6; // Number of items per page
 
   useEffect(() => {
     const fetchBestSellerProducts = async () => {
       setIsLoading(true);
       try {
-        // Simulating an API call with setTimeout
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Simulating API or data fetch
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // Filtering Best Seller products
-        const bestSellers = products.filter(product => product.isBestSeller); // Adjust based on your data structure
-        setBestSellerProducts(bestSellers);
+        const bestProduct = products.filter((item) => item.bestseller);
+        setBestSeller(bestProduct);
       } catch (error) {
-        console.error('Error fetching best seller products:', error);
+        console.error("Error fetching best seller products:", error);
       } finally {
         setIsLoading(false);
       }
@@ -43,30 +42,30 @@ const BestSellerCollection = () => {
   }
 
   // Pagination Logic
-  const totalPages = Math.ceil(bestSellerProducts.length / itemsPerPage);
-  const displayedProducts = bestSellerProducts.slice(
+  const totalPages = Math.ceil(bestSeller.length / itemsPerPage);
+  const displayedProducts = bestSeller.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(prevPage => prevPage + 1);
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
   const handlePrev = () => {
     if (currentPage > 1) {
-      setCurrentPage(prevPage => prevPage - 1);
+      setCurrentPage((prevPage) => prevPage - 1);
     }
   };
 
   return (
     <div className="my-10">
       <div className="text-center py-8 text-3xl">
-        <Title text1={'BEST SELLER'} text2={'PRODUCTS'} />
+        <Title text1={'BEST'} text2={'SELLERS'} />
         <p className="w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-400">
-          Check out our best-selling products at XchangeTechs. These items are loved by our customers for their quality and value.
+          At XchangeTechs, we bring you our best-selling products, chosen for their quality, value, and customer satisfaction. Explore our top picks and discover the products that our customers love the most!
         </p>
       </div>
 
@@ -111,4 +110,4 @@ const BestSellerCollection = () => {
   );
 };
 
-export default BestSellerCollection;
+export default BestSeller;
