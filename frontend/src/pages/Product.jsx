@@ -5,23 +5,49 @@ import RelatedProducts from '../components/RelatedProducts';
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext);
-  const [productData, setProductData] = useState(false);
+  const { products, currency, cartItems, addToCart, updateQuantity } = useContext(ShopContext);
+  const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
-
-  const fetchProductData = async () => {
-    products.map((item) => {
-      if (item._id === productId) {
-        setProductData(item);
-        setImage(item.image[0]);
-        return null;
-      }
-    });
-  };
+  const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
-    fetchProductData();
-  }, [productId, products]);
+    const product = products.find((item) => item._id === productId);
+    if (product) {
+      setProductData(product);
+      setImage(product.image[0]);
+
+      // Check if the product is in the cart and update the local quantity state
+      const cartProduct = cartItems[productId];
+      if (cartProduct) {
+        const totalQuantity = Object.values(cartProduct).reduce((sum, qty) => sum + qty, 0);
+        setQuantity(totalQuantity);
+      } else {
+        setQuantity(0);
+      }
+    }
+  }, [productId, products, cartItems]);
+
+  const handleIncrease = () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    updateQuantity(productId, 'default', newQuantity); // Assuming "default" as size for simplicity
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      updateQuantity(productId, 'default', newQuantity);
+    } else {
+      setQuantity(0);
+      updateQuantity(productId, 'default', 0);
+    }
+  };
+
+  const handleAddToCart = () => {
+    setQuantity(1);
+    addToCart(productId, 'default', 1); // Assuming "default" as size for simplicity
+  };
 
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
@@ -36,7 +62,7 @@ const Product = () => {
                 src={item}
                 key={index}
                 className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer rounded-md border border-gray-500'
-                alt=''
+                alt={`Product thumbnail ${index}`}
               />
             ))}
           </div>
@@ -44,7 +70,7 @@ const Product = () => {
             <img
               className='w-full h-auto max-w-xl rounded-md object-contain border border-gray-300 transition-all duration-300 transform-none'
               src={image}
-              alt=''
+              alt='Product main'
             />
           </div>
         </div>
@@ -52,28 +78,53 @@ const Product = () => {
         {/* -------- Product Info ---------- */}
         <div className='flex-1'>
           <h1 className='font-bold text-3xl mt-2 text-gray-800'>{productData.name}</h1>
-          <p className='mt-5 text-3xl font-semibold text-gray-800'>{currency}{productData.price}</p>
-          <p className='mt-5 text-gray-600'>{productData.description}</p>
+          <p className='mt-5 text-3xl font-semibold text-gray-800'>
+            {currency}
+            {productData.price}
+          </p>
 
-          {/* Description in Points Format */}
-          <div className='mt-5 text-gray-600'>
-            <ul className='list-inside'>
-              <li>Product Category: {productData.category}</li>
-            </ul>
+          {/* Description */}
+          <div className="mt-5 text-gray-600">
+            <h2 className="font-semibold text-lg">Description:</h2>
+            {Array.isArray(productData.description) ? (
+              <ul className="list-disc ml-5 mt-2" style={{ fontFamily: "Arial, sans-serif" }}>
+                {productData.description.map((point, index) => (
+                  <li key={index}>{point}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2" style={{ fontFamily: "Arial, sans-serif" }}>
+                {productData.description}
+              </p>
+            )}
           </div>
-          <br />
-          {/* Add to Cart Button */}
-          <button
-            onClick={() => addToCart(productData._id)}
-            className='text-gray-200 bg-black px-8 py-3 text-sm active:bg-gray-700 transition-all duration-300 hover:-translate-y-1'
-          >
-            ADD TO CART
-          </button>
-          <hr className='mt-8 sm:w-4/5' />
-          <div className='text-sm text-gray-800 mt-5 flex flex-col gap-1'>
-            {/* <p>100% Original product.</p>
-            <p>Cash on delivery is available on this product.</p>
-            <p>Easy return and exchange policy within 7 days.</p> */}
+
+          {/* Add to Cart or Quantity Selector */}
+          <div className='mt-5'>
+            {quantity > 0 ? (
+              <div className='flex items-center gap-3'>
+                <button
+                  onClick={handleDecrease}
+                  className='bg-gray-300 text-black px-3 py-1 rounded-md'
+                >
+                  -
+                </button>
+                <span>{quantity}</span>
+                <button
+                  onClick={handleIncrease}
+                  className='bg-gray-300 text-black px-3 py-1 rounded-md'
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                className='text-gray-200 bg-black px-8 py-3 text-sm active:bg-gray-700 transition-all duration-300 hover:-translate-y-1'
+              >
+                ADD TO CART
+              </button>
+            )}
           </div>
         </div>
       </div>
