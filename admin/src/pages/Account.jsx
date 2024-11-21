@@ -10,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 export default function Account() {
     const [user, setUser] = useState({
       username: 'admin',
-      email: 'admin@example.com',
+      email: 'admin@xchangetechs.com',
     });
     const [isEditing, setIsEditing] = useState(false);
     const [newPassword, setNewPassword] = useState('');

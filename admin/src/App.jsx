@@ -13,7 +13,7 @@ import Analytics from './pages/Analytics'
 import Dashboard from './pages/Dashboard'
 
 // export const backendUrl = "https://xchnagetechsecom-backend.onrender.com"
-export const backendUrl = "http://localhost:4000"
+export const backendUrl = "https://xchangetechs.onrender.com"
 export const currency = '₹'
 
 const App = () => {
