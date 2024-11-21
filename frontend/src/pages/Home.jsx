@@ -4,7 +4,9 @@ import LatestCollection from '../components/LatestCollection'
 import BestSeller from '../components/BestSeller'
 // import OurPolicy from '../components/OurPolicy'
 import NewsletterBox from '../components/NewsletterBox'
-import Categories from '../components/Categories'
+import ProductCategories from '../components/ProductsCategories'
+// import Categories from '../components/Categories'
+// import ShopContextProvider from '../context/ShopContext'
 // import ShopByCategories from '../components/ShopByCategories/ShopByCategories'
 const Home = () => {
   return (
@@ -12,6 +14,7 @@ const Home = () => {
       <Hero />
       {/* <ShopByCategories/> */}
       {/* <Categories/> */}
+      <ProductCategories/>
       <LatestCollection/>
       <BestSeller/>
       {/* <OurPolicy/> */}
